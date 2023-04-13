@@ -17,8 +17,8 @@ import org.bson.Document;
 @RestController
 @RequestMapping("/")
 public class LastController {
-    @GetMapping("DDD")
-    public String create(){
+    @PostMapping ("DDD")
+    public void create(){
         String mongoUri = "mongodb+srv://sheva:sheva@cluster1.xkwwqu6.mongodb.net/test";
         MongoClient mongoClient = MongoClients.create(mongoUri);
         MongoDatabase database = mongoClient.getDatabase("bezkoder_db");
@@ -34,7 +34,6 @@ public class LastController {
         collection.insertOne(document);
         mongoClient.close();
 
-        return "Перший запит пішов";
     }
 
     @GetMapping("WWW")
