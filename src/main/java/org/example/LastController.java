@@ -15,8 +15,9 @@ import org.bson.Document;
 
 
 @RestController
+@RequestMapping("/")
 public class LastController {
-    @RequestMapping ("/DDD")
+    @PostMapping("DDD")
     public String create(){
         String mongoUri = "mongodb+srv://sheva:sheva@cluster1.xkwwqu6.mongodb.net/test";
         MongoClient mongoClient = MongoClients.create(mongoUri);
@@ -36,7 +37,7 @@ public class LastController {
         return "Перший запит пішов";
     }
 
-    @GetMapping("/WWW")
+    @GetMapping("WWW")
     public String welcome() {
         return "Welcome to spring boot heroku demo";
     }
