@@ -31,6 +31,26 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class LastController {
+    @PostMapping("/DDD")
+    public String create(){
+        String mongoUri = "mongodb+srv://sheva:sheva@cluster1.xkwwqu6.mongodb.net/test"; // Replace with your own database URL
+        MongoClient mongoClient = MongoClients.create(mongoUri);
+        MongoDatabase database = mongoClient.getDatabase("bezkoder_db");
+
+        // Create a collection to store the data
+        MongoCollection<Document> collection = database.getCollection("my_documents");
+        System.out.println("Connected to database");
+        Document document = new Document();
+        document.put("priority","HIGHER");
+        document.put("author","func");
+        document.put("content","some extra text like this");
+
+        collection.insertOne(document);
+        mongoClient.close();
+
+        return "Перший запит пішов";
+    }
+
     @GetMapping("/WWW")
     public String welcome() {
         return "Welcome to spring boot heroku demo";
