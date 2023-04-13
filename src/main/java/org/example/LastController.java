@@ -20,7 +20,7 @@ import org.bson.Document;
 public class LastController {
     @PostMapping("/DDD")
     public String create(){
-        String mongoUri = "mongodb+srv://sheva:<sheva>@cluster1.xkwwqu6.mongodb.net/?retryWrites=true&w=majority";
+        String mongoUri = "mongodb+srv://sheva:sheva@cluster1.xkwwqu6.mongodb.net/test";
         MongoClient mongoClient = MongoClients.create(mongoUri);
         MongoDatabase database = mongoClient.getDatabase("bezkoder_db");
 
