@@ -1,8 +1,6 @@
 package org.example;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import com.mongodb.client.MongoClient;
@@ -18,7 +16,7 @@ import org.bson.Document;
 
 @RestController
 public class LastController {
-    @PostMapping("/DDD")
+    @RequestMapping ("/DDD")
     public String create(){
         String mongoUri = "mongodb+srv://sheva:sheva@cluster1.xkwwqu6.mongodb.net/test";
         MongoClient mongoClient = MongoClients.create(mongoUri);
