@@ -17,7 +17,7 @@ import org.bson.Document;
 @RestController
 @RequestMapping("/")
 public class LastController {
-    @GetMapping ("DDD")
+    @PostMapping ("DDD")
     public void create(){
         String mongoUri = "mongodb+srv://sheva:sheva@cluster1.xkwwqu6.mongodb.net/test";
         MongoClient mongoClient = MongoClients.create(mongoUri);
