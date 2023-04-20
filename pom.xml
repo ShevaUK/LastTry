@@ -186,7 +186,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>LastTry.src.main.java.org.example.Main</mainClass>
+                            <mainClass>org.example</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -223,7 +223,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>org.example.Main</mainClass>
+                            <mainClass>org.example</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
