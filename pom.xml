@@ -186,7 +186,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.example.Main</mainClass>
+                            <mainClass>org.example.Main.class</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -221,7 +221,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.example.Main</mainClass>
+                            <mainClass>org.example.Main.class</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
