@@ -1,4 +1,4 @@
-package org.example.jwt.impl;
+package org.example;
 
 
 import io.jsonwebtoken.*;
@@ -9,7 +9,6 @@ import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exception.BaseException;
-import org.example.jwt.JwtConfig;
 import org.example.jwt.JwtService;
 import org.example.service.security.UserDetailsCustom;
 import org.springframework.http.HttpStatus;

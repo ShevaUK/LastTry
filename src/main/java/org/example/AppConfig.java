@@ -1,4 +1,4 @@
-package org.example.config;
+package org.example;
 
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -6,7 +6,6 @@ import org.example.config.filter.CustomAuthenticationProvider;
 import org.example.config.filter.JwtTokenAuthenticationFilter;
 import org.example.config.filter.JwtUsernamePasswordAuthenticationFilter;
 import org.example.exception.CustomAccessDeniedHandler;
-import org.example.jwt.JwtConfig;
 import org.example.jwt.JwtService;
 import org.example.service.security.UserDetailsServiceCustom;
 import org.springframework.beans.factory.annotation.Autowired;

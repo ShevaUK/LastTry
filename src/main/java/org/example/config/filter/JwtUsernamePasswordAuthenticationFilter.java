@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.LoginRequest;
-import org.example.jwt.JwtConfig;
+import org.example.JwtConfig;
 import org.example.jwt.JwtService;
 import org.example.service.security.UserDetailsCustom;
 import org.example.utils.BaseResponseDTO;
@@ -22,7 +22,6 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
 
 

@@ -1,4 +1,4 @@
-package org.example.jwt;
+package org.example;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
