@@ -22,6 +22,29 @@
     </properties>
 
     <dependencies>
+<!--    нове    -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.0</version>
+            <!--			2.3.2-->
+        </dependency>
+
+
+
+
+
+
+
+
+
+
+<!--        нове-->
+
+
+
+
+
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>bson</artifactId>
@@ -153,6 +176,11 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.0.2</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
