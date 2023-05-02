@@ -7,9 +7,10 @@ import org.example.repository.TutorialRepository;
 import org.example.repository.UserRepository;
 import org.example.service.TutorialService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
+@Service
 public class TutorialServiceImp implements TutorialService {
     @Autowired
     TutorialRepository tutorialRepository;

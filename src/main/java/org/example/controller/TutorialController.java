@@ -1,7 +1,9 @@
 package org.example.controller;
 
+import jakarta.validation.ConstraintViolationException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.example.entity.Tutorial;
+import org.example.exception.TutorialCollectionException;
 import org.example.repository.TutorialRepository;
 import org.example.service.TutorialService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ import java.util.*;
 public class TutorialController {
     @Autowired
     TutorialRepository tutorialRepository;
+    @Autowired
+    TutorialService tutorialService;
 
     private Sort.Direction getSortDirection(String direction) {
         if (direction.equals("asc")) {
@@ -144,5 +148,17 @@ public class TutorialController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+    @PostMapping("/tutorials")
+    public ResponseEntity<?> createTutorial(@RequestBody Tutorial tutorial) {
+
+        try {
+            tutorialService.createTutorial(tutorial);
+            return new ResponseEntity<Tutorial>(tutorial,HttpStatus.OK);
+        } catch (ConstraintViolationException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (TutorialCollectionException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 }
