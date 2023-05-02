@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Document(collection = "UUU")
+@Document(collection = "users")
 public class User {
 
 
