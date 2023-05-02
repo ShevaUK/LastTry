@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
+@Repository
 public interface TutorialRepository extends MongoRepository<Tutorial, String>{
     Page<Tutorial> findByPublished(boolean published, Pageable pageable);
 
