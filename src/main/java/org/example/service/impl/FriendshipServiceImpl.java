@@ -35,15 +35,19 @@ public class FriendshipServiceImpl implements FriendshipService {
         return friendshipRepository.save(friendship);
     }
     @Override
-    public Friendship confirmFriendshipRequest(String friendshipId) {
+    public Friendship confirmFriendshipRequest(String friendshipId,String receiverUserId) {
         Optional<Friendship> friendship = friendshipRepository.findById(friendshipId);
         if (friendship.isPresent()) {
             Friendship request = friendship.get();
             if (request.getStatus() == FriendshipStatus.PENDING) {
-                request.setStatus(FriendshipStatus.ACCEPTED);
-                friendshipRepository.save(request);
+                if (request.getReceiverUserId().equals(receiverUserId)) {
+                    request.setStatus(FriendshipStatus.ACCEPTED);
+                    friendshipRepository.save(request);
 
-                return request;
+                    return request;
+                }else {
+                    throw new IllegalArgumentException("Only receiver user can confirm this friendship request.");
+                }
             } else {
                 throw new IllegalArgumentException("Friend request has already been accepted or rejected.");
             }
@@ -52,14 +56,18 @@ public class FriendshipServiceImpl implements FriendshipService {
         }
     }
     @Override
-    public Friendship rejectFriendshipRequest(String friendRequestId) {
-        Optional<Friendship> friendship = friendshipRepository.findById(friendRequestId);
+    public Friendship rejectFriendshipRequest(String friendshipId,String rejectedById) {
+        Optional<Friendship> friendship = friendshipRepository.findById(friendshipId);
         if (friendship.isPresent()) {
             Friendship request = friendship.get();
             if (request.getStatus() == FriendshipStatus.PENDING) {
+                if (rejectedById.equals(request.getReceiverUserId()) || rejectedById.equals(request.getSenderUserId())) {
                 request.setStatus(FriendshipStatus.REJECTED);
                 friendshipRepository.save(request);
                 return request;
+                } else {
+                    throw new IllegalArgumentException("Invalid rejectedBy parameter. It must be equal to either senderUserId or receiverUserId.");
+                }
             } else {
                 throw new IllegalArgumentException("Friend request has already been accepted or rejected.");
             }

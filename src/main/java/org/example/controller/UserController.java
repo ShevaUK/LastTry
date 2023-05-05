@@ -6,7 +6,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import jakarta.annotation.security.PermitAll;
 import org.bson.Document;
-import org.example.dto.FriendshipDTO;
+import org.example.dto.*;
 import org.example.entity.Friendship;
 import org.example.entity.Tutorial;
 import org.example.entity.User;
@@ -62,18 +62,18 @@ public class UserController {
     public String welcome() {
         return "Welcome to spring boot heroku demo";
     }
-    @PostMapping("/{userId}/tutorials/{tutorialId}")
-    public ResponseEntity<User> addTutorialToUser(@PathVariable String userId, @PathVariable String tutorialId) {
+    @PostMapping("/addTutorialToUser")
+    public ResponseEntity<User> addTutorialToUser(@RequestBody AddTutorialDTO addTutorialDTO) {
         try {
-            User updatedUser = userService.addTutorialById(userId, tutorialId);
+            User updatedUser = userService.addTutorialById(addTutorialDTO.getUserId(), addTutorialDTO.getTutorialId());
             return ResponseEntity.ok(updatedUser);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
-    @GetMapping("/users/{userId}/friends/{friendId}/tutorials")
-    public List<Tutorial> getFriendTutorials(@PathVariable String userId, @PathVariable String friendId) {
-        return tutorialService.getFriendTutorials(userId, friendId);
+    @PostMapping("/users/friends/tutorials")
+    public List<Tutorial> getFriendTutorials(@RequestBody GetFriendTutorialsDTO getFriendTutorialsDTO) {
+        return tutorialService.getFriendTutorials(getFriendTutorialsDTO.getUserId(), getFriendTutorialsDTO.getFriendId());
     }
     @PostMapping("/request")
     public ResponseEntity<Friendship> createFriendshipRequest(@RequestBody FriendshipDTO friendshipDTO) {
@@ -81,23 +81,21 @@ public class UserController {
         return new ResponseEntity<>(friendship, HttpStatus.CREATED);
     }
 
-    @PostMapping("/confirm/{friendshipId}")
-    public ResponseEntity<Friendship> confirmFriendshipRequest(@PathVariable("friendshipId") String friendshipId) {
-        Friendship friendship = friendshipService.confirmFriendshipRequest(friendshipId);
+    @PostMapping("/confirm")
+    public ResponseEntity<Friendship> confirmFriendshipRequest(@RequestBody ConfirmFriendshipDTO confirmFriendshipDTO) {
+        Friendship friendship = friendshipService.confirmFriendshipRequest(confirmFriendshipDTO.getFriendshipId(),confirmFriendshipDTO.getReceiverUserId());
         return new ResponseEntity<>(friendship, HttpStatus.OK);
     }
 
-    @PostMapping("/reject/{friendshipId}")
-    public ResponseEntity<Friendship> rejectFriendshipRequest(@PathVariable("friendshipId") String friendshipId) {
-        Friendship friendship = friendshipService.rejectFriendshipRequest(friendshipId);
+    @PostMapping("/reject/")
+    public ResponseEntity<Friendship> rejectFriendshipRequest(@RequestBody RejectFriendshipDTO rejectFriendshipDTO) {
+        Friendship friendship = friendshipService.rejectFriendshipRequest(rejectFriendshipDTO.getFriendshipId(),rejectFriendshipDTO.getRejectedById());
         return new ResponseEntity<>(friendship, HttpStatus.OK);
     }
 
-    @PermitAll
-    @GetMapping("/{senderUserId}/{receiverUserId}")
-    public ResponseEntity<Friendship> getFriendshipRequest(@PathVariable("senderUserId") String senderUserId,
-                                                           @PathVariable("receiverUserId") String receiverUserId) {
-        Friendship friendship = friendshipService.getFriendshipRequest(senderUserId, receiverUserId);
+    @PostMapping("/infoFriendship")
+    public ResponseEntity<Friendship> getFriendshipRequest(@RequestBody FriendshipDTO friendshipDTO) {
+        Friendship friendship = friendshipService.getFriendshipRequest(friendshipDTO.getSenderUserId(), friendshipDTO.getReceiverUserId());
         return new ResponseEntity<>(friendship, HttpStatus.OK);
     }
 
