@@ -2,6 +2,7 @@ package org.example.service.impl;
 
 
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.UserDTO;
 import org.example.entity.Role;
@@ -15,14 +16,13 @@ import org.example.repository.UserRepository;
 import org.example.service.UserService;
 import org.example.utils.BaseResponseDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -59,6 +59,8 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userDTO.getUsername());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setEmail(userDTO.getEmail());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
         Set<Role> roles = new HashSet<>();
         roles.add(roleRepository.findByName(userDTO.getRole()));
         user.setRoles(roles);
@@ -86,16 +88,12 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public User getUserById(String userId) {
-        return userRepository.findById(userId).orElse(null);
-    }
+        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));}
     @Override
     public User addUser(User user) {
         return userRepository.save(user);
     }
-    @Override
-    public User updateUser(User user) {
-        return userRepository.save(user);
-    }
+
     @Override
     public User addTutorialById(String userId, String tutorialId) {
         User user = userRepository.findById(userId)
@@ -115,5 +113,39 @@ public class UserServiceImpl implements UserService {
 
         return user;
     }
+    @Override
+    public User getCurrentUser(HttpServletRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        String username = authentication.getName();
+        return userRepository.findByUsername(username);
+    }
+    @Override
+    public User updateUser(String token, User userToUpdate){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResourceNotFoundException("Invalid token");
+        }
+        String username = authentication.getName();
+        User currentUser = userRepository.findByUsername(username);
+        if (currentUser == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+        if (!currentUser.getId().equals(userToUpdate.getId())) {
+            throw new ResourceNotFoundException("User not authorized to update this profile");
+        }
+        // update
 
+
+        currentUser.setUsername(userToUpdate.getUsername());
+        currentUser.setEmail(userToUpdate.getEmail());
+        currentUser.setFirstName(userToUpdate.getFirstName());
+        currentUser.setLastName(userToUpdate.getLastName());
+        currentUser.setPassword(userToUpdate.getPassword());
+        return userRepository.save(currentUser);
+    }
 }
+
+

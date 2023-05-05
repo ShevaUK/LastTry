@@ -5,11 +5,13 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import jakarta.annotation.security.PermitAll;
+import jakarta.servlet.http.HttpServletRequest;
 import org.bson.Document;
 import org.example.dto.*;
 import org.example.entity.Friendship;
 import org.example.entity.Tutorial;
 import org.example.entity.User;
+import org.example.exception.GlobalException;
 import org.example.exception.ResourceNotFoundException;
 import org.example.repository.UserRepository;
 import org.example.service.FriendshipService;
@@ -18,6 +20,7 @@ import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -98,6 +101,19 @@ public class UserController {
         Friendship friendship = friendshipService.getFriendshipRequest(friendshipDTO.getSenderUserId(), friendshipDTO.getReceiverUserId());
         return new ResponseEntity<>(friendship, HttpStatus.OK);
     }
+
+    @GetMapping("/currentUser")
+    public ResponseEntity<User> getUser(HttpServletRequest request) {
+        User currentUser = userService.getCurrentUser(request);
+        return ResponseEntity.ok(currentUser);
+    }
+    @PutMapping("/me")
+    public ResponseEntity<User> updateUser(@RequestHeader("Authorization") String token, @RequestBody User userToUpdate) {
+        User updatedUser = userService.updateUser(token, userToUpdate);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+
 
 
 }
