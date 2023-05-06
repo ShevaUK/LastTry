@@ -22,7 +22,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.util.List;
 
@@ -111,6 +117,20 @@ public class UserController {
     public ResponseEntity<User> updateUser(@RequestHeader("Authorization") String token, @RequestBody User userToUpdate) {
         User updatedUser = userService.updateUser(token, userToUpdate);
         return ResponseEntity.ok(updatedUser);
+    }
+    @PostMapping("upload-file")
+    public String uploadImage(@RequestParam("file")MultipartFile file) throws IOException {
+        System.out.println(file.getOriginalFilename());
+        System.out.println(file.getName());
+        System.out.println(file.getContentType());
+        System.out.println(file.getSize());
+
+        String Path_Directory = "/Users/macbook/IdeaProjects/LastTry/src/main/resources/static/image";
+        Files.copy(file.getInputStream(), Paths.get(Path_Directory+ File.separator+file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+
+        return "Succesessfully Image is uploaded";
+
+
     }
 
 
