@@ -118,20 +118,20 @@ public class UserController {
         User updatedUser = userService.updateUser(token, userToUpdate);
         return ResponseEntity.ok(updatedUser);
     }
-    @PostMapping("upload-file")
-    public String uploadImage(@RequestParam("file")MultipartFile file) throws IOException {
-        System.out.println(file.getOriginalFilename());
-        System.out.println(file.getName());
-        System.out.println(file.getContentType());
-        System.out.println(file.getSize());
-
-        String Path_Directory = "/Users/macbook/IdeaProjects/LastTry/src/main/resources/static/image";
-        Files.copy(file.getInputStream(), Paths.get(Path_Directory+ File.separator+file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
-
-        return "Succesessfully Image is uploaded";
-
-
-    }
+//    @PostMapping("upload-file")
+//    public String uploadImage(@RequestParam("file")MultipartFile file) throws IOException {
+//        System.out.println(file.getOriginalFilename());
+//        System.out.println(file.getName());
+//        System.out.println(file.getContentType());
+//        System.out.println(file.getSize());
+//
+//        String Path_Directory = "/Users/macbook/IdeaProjects/LastTry/src/main/resources/static/image";
+//        Files.copy(file.getInputStream(), Paths.get(Path_Directory+ File.separator+file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+//
+//        return "Succesessfully Image is uploaded";
+//
+//
+//    }
 
 
 
