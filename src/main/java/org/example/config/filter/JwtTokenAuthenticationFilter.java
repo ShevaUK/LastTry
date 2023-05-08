@@ -35,6 +35,15 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        response.addHeader("Access-Control-Allow-Origin", "https://front-book-tutorials.herokuapp.com"); // Додайте дозволене джерело
+        response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE"); // Додайте дозволені методи
+        response.addHeader("Access-Control-Allow-Headers", "*"); // Додайте дозволені заголовки
+        response.addHeader("Access-Control-Allow-Credentials", "true");
+
+        if ("OPTIONS".equals(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
 
         String accessToken = request.getHeader(jwtConfig.getHeader());
 

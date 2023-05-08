@@ -25,7 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://front-book-tutorials.herokuapp.com")
 @RestController
 @RequestMapping("/user")
 public class UserController {
