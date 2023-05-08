@@ -16,13 +16,23 @@ public class CorsFilter implements Filter {
 
         final HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
-        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
-        httpServletResponse.setHeader("Access-Control-Allow-Methods", "*");
+        httpServletResponse.setHeader("Access-Control-Allow-Origin", "https://front-book-tutorials.herokuapp.com");
+        httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
         httpServletResponse.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
         httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
-        if (HttpMethod.OPTIONS.name().equalsIgnoreCase(((HttpServletRequest) request).getMethod())) {
+
+        if (HttpMethod.OPTIONS.equals(((HttpServletRequest) request).getMethod())) {
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+            return;
         }
+
+//        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+//        httpServletResponse.setHeader("Access-Control-Allow-Methods", "*");
+//        httpServletResponse.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
+//        httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
+//        if (HttpMethod.OPTIONS.name().equalsIgnoreCase(((HttpServletRequest) request).getMethod())) {
+//            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+//        }
         chain.doFilter(request, response);
 
     }
