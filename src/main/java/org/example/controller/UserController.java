@@ -124,13 +124,29 @@ public class UserController {
         System.out.println(file.getContentType());
         System.out.println(file.getSize());
 
-        String Path_Directory = "/Users/macbook/IdeaProjects/LastTry/src/main/resources/static/image";
-        Files.copy(file.getInputStream(), Paths.get(Path_Directory+ File.separator+file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+        String projectDirectory = System.getProperty("user.dir"); // Отримуємо шлях до кореневої папки проекту
+        String imagesDirectory = projectDirectory + "/src/main/resources/static/image";
 
-        return "Succesessfully Image is uploaded";
+        // Остаточний шлях до файлу
+        String filePath = imagesDirectory + "/" + file.getOriginalFilename();
 
+        Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
 
+        return "Successfully uploaded the image";
     }
+//    public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
+//        System.out.println(file.getOriginalFilename());
+//        System.out.println(file.getName());
+//        System.out.println(file.getContentType());
+//        System.out.println(file.getSize());
+//
+//        String Path_Directory = "/Users/macbook/IdeaProjects/LastTry/src/main/resources/static/image";
+//        Files.copy(file.getInputStream(), Paths.get(Path_Directory+ File.separator+file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+//
+//        return "Succesessfully Image is uploaded";
+//
+//
+//    }
 
 
 
