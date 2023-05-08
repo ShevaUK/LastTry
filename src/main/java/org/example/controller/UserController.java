@@ -19,14 +19,17 @@ import org.example.service.FriendshipService;
 import org.example.service.TutorialService;
 import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
@@ -35,8 +38,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    @Autowired
-    private ServletContext servletContext;
+    @Value("${image.upload.directory}")
+    private String imageUploadDirectory;
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -120,18 +124,48 @@ public class UserController {
         User updatedUser = userService.updateUser(token, userToUpdate);
         return ResponseEntity.ok(updatedUser);
     }
-    @PostMapping("upload-file")
+    @PostMapping("/upload-image")
     public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-        String resourcesDirectory = servletContext.getRealPath("/resources");
-        String imagesDirectory = resourcesDirectory + "/static/image";
+        // Перевірка, чи вибраний файл для завантаження
+        if (file.isEmpty()) {
+            return "Error: Please select a file to upload.";
+        }
 
-        // Остаточний шлях до файлу
-        String filePath = imagesDirectory + "/" + file.getOriginalFilename();
+        // Отримання оригінального імені файлу
+        String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
 
-        Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+        try {
+            // Побудова шляху до завантаження зображення
+            Path uploadPath = Path.of(imageUploadDirectory);
+            Path filePath = uploadPath.resolve(originalFilename).normalize();
 
-        return "Successfully uploaded the image";
+            // Перевірка, чи існує директорія для завантаження зображень. Якщо ні, створюємо її.
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            // Копіюємо зображення в указану директорію
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            // Записуємо успішне повідомлення
+            return "Successfully uploaded the image.";
+        } catch (IOException ex) {
+            return "Error occurred while uploading the image.";
+        }
     }
+
+//    @PostMapping("upload-file")
+//    public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
+//        String resourcesDirectory = servletContext.getRealPath("/resources");
+//        String imagesDirectory = resourcesDirectory + "/static/image";
+//
+//        // Остаточний шлях до файлу
+//        String filePath = imagesDirectory + "/" + file.getOriginalFilename();
+//
+//        Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+//
+//        return "Successfully uploaded the image";
+//    }
 
 
 //    @PostMapping("upload-file")
