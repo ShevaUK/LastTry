@@ -1,18 +1,11 @@
 package org.example.controller;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import jakarta.annotation.security.PermitAll;
-import jakarta.servlet.ServletContext;
+
 import jakarta.servlet.http.HttpServletRequest;
-import org.bson.Document;
 import org.example.dto.*;
 import org.example.entity.Friendship;
 import org.example.entity.Tutorial;
 import org.example.entity.User;
-import org.example.exception.GlobalException;
 import org.example.exception.ResourceNotFoundException;
 import org.example.repository.UserRepository;
 import org.example.service.FriendshipService;
@@ -26,13 +19,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -50,33 +41,8 @@ public class UserController {
     @Autowired
     private FriendshipService friendshipService;
 
-    @GetMapping("/index")
-    public ResponseEntity<String> index(Principal principal){
-        return ResponseEntity.ok("Welcome to user page : " + principal.getName());
-    }
-    @PostMapping("/DDD")
-    public void create(){
-        String mongoUri = "mongodb+srv://sheva:sheva@cluster1.xkwwqu6.mongodb.net/test";
-        MongoClient mongoClient = MongoClients.create(mongoUri);
-        MongoDatabase database = mongoClient.getDatabase("bezkoder_db");
 
 
-        MongoCollection<Document> collection = database.getCollection("my_documents");
-        System.out.println("Connected to database");
-        Document document = new Document();
-        document.put("priority","Lowwwww");
-        document.put("author","func");
-        document.put("content","some extra text like this");
-
-        collection.insertOne(document);
-        mongoClient.close();
-
-    }
-
-    @GetMapping("/WWW")
-    public String welcome() {
-        return "Welcome to spring boot heroku demo";
-    }
     @PostMapping("/addTutorialToUser")
     public ResponseEntity<User> addTutorialToUser(@RequestBody AddTutorialDTO addTutorialDTO) {
         try {
@@ -126,7 +92,7 @@ public class UserController {
     }
     @PostMapping("/upload-image")
     public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-        // Перевірка, чи вибраний файл для завантаження
+
         if (file.isEmpty()) {
             return "Error: Please select a file to upload.";
         }
@@ -135,72 +101,24 @@ public class UserController {
         String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
 
         try {
-            // Побудова шляху до завантаження зображення
+
             Path uploadPath = Path.of(imageUploadDirectory);
             Path filePath = uploadPath.resolve(originalFilename).normalize();
 
-            // Перевірка, чи існує директорія для завантаження зображень. Якщо ні, створюємо її.
+
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-            // Копіюємо зображення в указану директорію
+
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            // Записуємо успішне повідомлення
+
             return "Successfully uploaded the image.";
         } catch (IOException ex) {
             return "Error occurred while uploading the image.";
         }
     }
-
-//    @PostMapping("upload-file")
-//    public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-//        String resourcesDirectory = servletContext.getRealPath("/resources");
-//        String imagesDirectory = resourcesDirectory + "/static/image";
-//
-//        // Остаточний шлях до файлу
-//        String filePath = imagesDirectory + "/" + file.getOriginalFilename();
-//
-//        Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
-//
-//        return "Successfully uploaded the image";
-//    }
-
-
-//    @PostMapping("upload-file")
-//
-//    public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-//        System.out.println(file.getOriginalFilename());
-//        System.out.println(file.getName());
-//        System.out.println(file.getContentType());
-//        System.out.println(file.getSize());
-//
-//        String projectDirectory = System.getProperty("user.dir"); // Отримуємо шлях до кореневої папки проекту
-//        String imagesDirectory = projectDirectory + "/src/main/resources/static/image";
-//
-//        // Остаточний шлях до файлу
-//        String filePath = imagesDirectory + "/" + file.getOriginalFilename();
-//
-//        Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
-//
-//        return "Successfully uploaded the image";
-//    }
-//    public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-//        System.out.println(file.getOriginalFilename());
-//        System.out.println(file.getName());
-//        System.out.println(file.getContentType());
-//        System.out.println(file.getSize());
-//
-//        String Path_Directory = "/Users/macbook/IdeaProjects/LastTry/src/main/resources/static/image";
-//        Files.copy(file.getInputStream(), Paths.get(Path_Directory+ File.separator+file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
-//
-//        return "Succesessfully Image is uploaded";
-//
-//
-//    }
-
-
 
 
 }

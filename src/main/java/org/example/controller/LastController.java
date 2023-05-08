@@ -26,29 +26,7 @@ import java.util.TimerTask;
 @RestController
 @RequestMapping("/guest")
 public class LastController {
-    @PostMapping ("DDD")
-    public void create(){
-        String mongoUri = "mongodb+srv://sheva:sheva@cluster1.xkwwqu6.mongodb.net/test";
-        MongoClient mongoClient = MongoClients.create(mongoUri);
-        MongoDatabase database = mongoClient.getDatabase("bezkoder_db");
 
-
-        MongoCollection<Document> collection = database.getCollection("my_documents");
-        System.out.println("Connected to database");
-        Document document = new Document();
-        document.put("priority","HIGHE");
-        document.put("author","func");
-        document.put("content","some extra text like this");
-
-        collection.insertOne(document);
-        mongoClient.close();
-
-    }
-
-    @GetMapping("WWW")
-    public String welcome() {
-        return "Welcome to spring boot heroku demo";
-    }
 
     @PostMapping("/AAA")
     public void myCurrency() throws IOException {
@@ -88,7 +66,7 @@ public class LastController {
                     e.printStackTrace();
                 }
             }
-        }, 0, 5 * 60 * 1000); // Run every 5 minutes
+        }, 0, 24 * 60 * 60 * 1000); // Run every 5 minutes
     }
 
 
