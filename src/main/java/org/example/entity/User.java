@@ -32,7 +32,9 @@ public class User {
 
     @DBRef
     private Set<Role> roles = new HashSet<>();
+    @DBRef
     private List<Friendship> friendships;
+    @DBRef
     private List<Tutorial> tutorials;
     private String firstName;
     private String lastName;
