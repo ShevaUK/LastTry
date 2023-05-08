@@ -5,6 +5,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import jakarta.annotation.security.PermitAll;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import org.bson.Document;
 import org.example.dto.*;
@@ -34,6 +35,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    @Autowired
+    private ServletContext servletContext;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -119,13 +122,8 @@ public class UserController {
     }
     @PostMapping("upload-file")
     public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-        System.out.println(file.getOriginalFilename());
-        System.out.println(file.getName());
-        System.out.println(file.getContentType());
-        System.out.println(file.getSize());
-
-        String projectDirectory = System.getProperty("user.dir"); // Отримуємо шлях до кореневої папки проекту
-        String imagesDirectory = projectDirectory + "/src/main/resources/static/image";
+        String resourcesDirectory = servletContext.getRealPath("/resources");
+        String imagesDirectory = resourcesDirectory + "/static/image";
 
         // Остаточний шлях до файлу
         String filePath = imagesDirectory + "/" + file.getOriginalFilename();
@@ -134,6 +132,26 @@ public class UserController {
 
         return "Successfully uploaded the image";
     }
+
+
+//    @PostMapping("upload-file")
+//
+//    public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
+//        System.out.println(file.getOriginalFilename());
+//        System.out.println(file.getName());
+//        System.out.println(file.getContentType());
+//        System.out.println(file.getSize());
+//
+//        String projectDirectory = System.getProperty("user.dir"); // Отримуємо шлях до кореневої папки проекту
+//        String imagesDirectory = projectDirectory + "/src/main/resources/static/image";
+//
+//        // Остаточний шлях до файлу
+//        String filePath = imagesDirectory + "/" + file.getOriginalFilename();
+//
+//        Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+//
+//        return "Successfully uploaded the image";
+//    }
 //    public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
 //        System.out.println(file.getOriginalFilename());
 //        System.out.println(file.getName());
