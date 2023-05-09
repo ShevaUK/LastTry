@@ -5,10 +5,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Configuration
+@Component
 public class CorsFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -16,23 +18,14 @@ public class CorsFilter implements Filter {
 
         final HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
-        httpServletResponse.setHeader("Access-Control-Allow-Origin", "https://front-book-tutorials.herokuapp.com");
-        httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+
+        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+        httpServletResponse.setHeader("Access-Control-Allow-Methods", "*");
         httpServletResponse.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
         httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
-
-        if (HttpMethod.OPTIONS.equals(((HttpServletRequest) request).getMethod())) {
+        if (HttpMethod.OPTIONS.name().equalsIgnoreCase(((HttpServletRequest) request).getMethod())) {
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-            return;
         }
-
-//        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
-//        httpServletResponse.setHeader("Access-Control-Allow-Methods", "*");
-//        httpServletResponse.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
-//        httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
-//        if (HttpMethod.OPTIONS.name().equalsIgnoreCase(((HttpServletRequest) request).getMethod())) {
-//            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-//        }
         chain.doFilter(request, response);
 
     }
