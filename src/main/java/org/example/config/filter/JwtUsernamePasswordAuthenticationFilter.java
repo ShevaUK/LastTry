@@ -27,7 +27,7 @@ import java.util.Collections;
 
 
 @Slf4j
-@CrossOrigin(origins = "https://front-book-tutorials.herokuapp.com/")
+@CrossOrigin(origins = "https://front-book-tutorials.herokuapp.com")
 public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private final JwtService jwtService;
