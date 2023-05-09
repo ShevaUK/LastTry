@@ -20,12 +20,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.io.IOException;
 import java.util.Collections;
 
 
 @Slf4j
+@CrossOrigin(origins = "https://front-book-tutorials.herokuapp.com/")
 public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private final JwtService jwtService;
