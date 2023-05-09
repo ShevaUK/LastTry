@@ -8,7 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-
+/////////
 @Configuration
 @Component
 public class CorsFilter implements Filter {
@@ -30,3 +30,4 @@ public class CorsFilter implements Filter {
 
     }
 }
+
