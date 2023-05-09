@@ -30,11 +30,11 @@ public class AppConfig {
     @Autowired
     private CustomAuthenticationProvider customAuthenticationProvider;
 
-    @Autowired
-    JwtConfig jwtConfig;
-
-    @Autowired
-    private JwtService jwtService;
+//    @Autowired
+//    JwtConfig jwtConfig;
+//
+//    @Autowired
+//    private JwtService jwtService;
 
     @Bean
     public JwtConfig jwtConfig(){
@@ -58,7 +58,7 @@ public class AppConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http,JwtConfig jwtConfig,JwtService jwtService) throws Exception {
         AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
 
         builder.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
