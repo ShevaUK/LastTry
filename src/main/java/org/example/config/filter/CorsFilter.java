@@ -8,7 +8,6 @@ import org.springframework.http.HttpMethod;
 
 
 import java.io.IOException;
-/////////
 @Configuration
 public class CorsFilter implements Filter {
     @Override
