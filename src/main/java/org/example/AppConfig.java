@@ -33,7 +33,6 @@ public class AppConfig {
     @Autowired
     JwtConfig jwtConfig;
 
-////////
     @Autowired
     private JwtService jwtService;
 
@@ -87,7 +86,6 @@ public class AppConfig {
                 )
                 .accessDeniedHandler(new CustomAccessDeniedHandler())
                 .and()
-                .addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
                 .addFilterBefore(new JwtUsernamePasswordAuthenticationFilter(manager, jwtConfig, jwtService), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(new JwtTokenAuthenticationFilter(jwtConfig, jwtService), UsernamePasswordAuthenticationFilter.class)
         ;
