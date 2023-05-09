@@ -76,7 +76,7 @@ public class AppConfig {
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                 .requestMatchers("/user/**").hasAuthority("USER")
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/login").permitAll()
+                .requestMatchers("/jwt/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .authenticationManager(manager)
