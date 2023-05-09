@@ -68,6 +68,7 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
 
         String accessToken = jwtService.generateToken(userDetailsCustom);
         String json = HelperUtils.JSON_WRITER.writeValueAsString(accessToken);
+        response.setHeader("Access-Control-Allow-Origin", "*");
         response.setContentType("application/json; charset=UTF-8");
         response.getWriter().write(json);
         log.info("End success authentication: {}", accessToken);
