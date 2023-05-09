@@ -86,7 +86,6 @@ public class AppConfig {
                 )
                 .accessDeniedHandler(new CustomAccessDeniedHandler())
                 .and()
-                .addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
                 .addFilterBefore(new JwtUsernamePasswordAuthenticationFilter(manager, jwtConfig, jwtService), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(new JwtTokenAuthenticationFilter(jwtConfig, jwtService), UsernamePasswordAuthenticationFilter.class)
         ;
