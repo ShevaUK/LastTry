@@ -37,7 +37,7 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
     public JwtUsernamePasswordAuthenticationFilter(AuthenticationManager manager,
                                                    JwtConfig jwtConfig,
                                                    JwtService jwtService){
-        super(new AntPathRequestMatcher(jwtConfig.getUrl(), "POST"));
+       super(new AntPathRequestMatcher(jwtConfig.getUrl(), "POST"));
        setAuthenticationManager(manager);
         this.objectMapper = new ObjectMapper();
         this.jwtService = jwtService;
@@ -83,6 +83,7 @@ public class JwtUsernamePasswordAuthenticationFilter extends AbstractAuthenticat
 
         String json = HelperUtils.JSON_WRITER.writeValueAsString(responseDTO);
 
+        response.setHeader("Access-Control-Allow-Origin", "*");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json; charset=UTF-8");
         response.getWriter().write(json);

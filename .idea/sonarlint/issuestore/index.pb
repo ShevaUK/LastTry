@@ -9,8 +9,6 @@ l
 <src/main/java/org/example/controller/TutorialController.java,e/a/ea40abf62975bcfe2e9424a3861c177a521f4280
 i
 9src/main/java/org/example/controller/AdminController.java,9/7/9767da272182b946253f3bb2a481a84b695a96fb
-h
-8src/main/java/org/example/controller/UserController.java,b/7/b713bf81ec595e3f695a79200fb78c8915c34789
 `
 0src/main/java/org/example/utils/HelperUtils.java,3/2/329c9d67482926d58f773093f690a415593d7f44
 b
