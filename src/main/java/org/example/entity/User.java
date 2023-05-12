@@ -14,8 +14,6 @@ import java.util.Set;
 @Document(collection = "users")
 public class User {
 
-
-
     @Id
     private String id;
 
@@ -38,16 +36,17 @@ public class User {
     private List<Tutorial> tutorials;
     private String firstName;
     private String lastName;
+    private String avatarUrl;
     public User() {
     }
-    public User(String username,String email, String password,List<Friendship>friendships,List<Tutorial> tutorials,String firstName,String lastName) {
+    public User(String username,String email, String password,List<Tutorial> tutorials,String firstName,String lastName,String avatarUrl) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.friendships = friendships;
         this.tutorials = tutorials;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.avatarUrl = avatarUrl;
     }
 
     public String getId() {
@@ -121,4 +120,8 @@ public class User {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
+    public String getAvatarUrl() {return avatarUrl;}
+
+    public void setAvatarUrl(String avatarUrl) {this.avatarUrl = avatarUrl;}
 }

@@ -20,17 +20,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    @Value("${image.upload.directory}")
-    private String imageUploadDirectory;
+    @Value("${file.upload-dir}")
+    private String fileUploadDir;
 
     @Autowired
     private UserRepository userRepository;
@@ -85,40 +84,56 @@ public class UserController {
         User currentUser = userService.getCurrentUser(request);
         return ResponseEntity.ok(currentUser);
     }
-    @PutMapping("/me")
+    @PutMapping("/update")
     public ResponseEntity<User> updateUser(@RequestHeader("Authorization") String token, @RequestBody User userToUpdate) {
-        User updatedUser = userService.updateUser(token, userToUpdate);
+        User updatedUser = userService.updateUser( userToUpdate);
         return ResponseEntity.ok(updatedUser);
     }
-    @PostMapping("/upload-image")
-    public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-
-        if (file.isEmpty()) {
-            return "Error: Please select a file to upload.";
-        }
-
-        // Отримання оригінального імені файлу
-        String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
-
+    @PostMapping("/avatars")
+    public ResponseEntity<String> uploadAvatar(@RequestParam("avatar") MultipartFile file) {
         try {
-
-            Path uploadPath = Path.of(imageUploadDirectory);
-            Path filePath = uploadPath.resolve(originalFilename).normalize();
-
-
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-
-            return "Successfully uploaded the image.";
-        } catch (IOException ex) {
-            return "Error occurred while uploading the image.";
+            String avatarUrl = userService.saveAvatar(file);
+            return ResponseEntity.ok(avatarUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload avatar");
         }
     }
+
+//    @PutMapping("/me")
+//    public ResponseEntity<User> updateUser(@RequestHeader("Authorization") String token, @RequestBody User userToUpdate) {
+//        User updatedUser = userService.updateUser(token, userToUpdate, avatarFile);
+//        return ResponseEntity.ok(updatedUser);
+//    }
+//    @PostMapping("/upload-image")
+//    public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
+//
+//        if (file.isEmpty()) {
+//            return "Error: Please select a file to upload.";
+//        }
+//
+//        // Отримання оригінального імені файлу
+//        String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
+//
+//        try {
+//
+//            Path uploadPath = Path.of(imageUploadDirectory);
+//            Path filePath = uploadPath.resolve(originalFilename).normalize();
+//
+//
+//            if (!Files.exists(uploadPath)) {
+//                Files.createDirectories(uploadPath);
+//            }
+//
+//
+//            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+//
+//
+//            return "Successfully uploaded the image.";
+//        } catch (IOException ex) {
+//            return "Error occurred while uploading the image.";
+//        }
+//    }
 
 
 }

@@ -2,7 +2,6 @@ package org.example;
 
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.config.filter.CorsFilter;
 import org.example.config.filter.CustomAuthenticationProvider;
 import org.example.config.filter.JwtTokenAuthenticationFilter;
 import org.example.config.filter.JwtUsernamePasswordAuthenticationFilter;
@@ -21,21 +20,18 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+
+
 @Configuration
-@EnableWebSecurity  ///
-public class AppConfig {
+@EnableWebSecurity
+public class AppConfig  {
 
     @Autowired
     private CustomAuthenticationProvider customAuthenticationProvider;
 
-//    @Autowired
-//    JwtConfig jwtConfig;
-//
-//    @Autowired
-//    private JwtService jwtService;
+
 
     @Bean
     public JwtConfig jwtConfig(){

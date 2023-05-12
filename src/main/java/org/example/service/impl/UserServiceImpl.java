@@ -15,13 +15,18 @@ import org.example.repository.TutorialRepository;
 import org.example.repository.UserRepository;
 import org.example.service.UserService;
 import org.example.utils.BaseResponseDTO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -34,6 +39,8 @@ public class UserServiceImpl implements UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
     private final TutorialRepository tutorialRepository;
+    @Value("${file.upload-dir}")
+    private String fileUploadDir;
 
     @Override
     public BaseResponseDTO registerAccount(UserDTO userDTO) {
@@ -122,8 +129,51 @@ public class UserServiceImpl implements UserService {
         String username = authentication.getName();
         return userRepository.findByUsername(username);
     }
+
     @Override
-    public User updateUser(String token, User userToUpdate){
+    public String saveAvatar(MultipartFile file) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResourceNotFoundException("Invalid token");
+        }
+
+        String username = authentication.getName();
+        User currentUser = userRepository.findByUsername(username);
+        if (currentUser == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+
+
+        String fileName = UUID.randomUUID().toString() + "." + StringUtils.getFilenameExtension(file.getOriginalFilename());
+
+
+        String uploadDir = fileUploadDir + File.separator + "avatars";
+
+
+        File directory = new File(uploadDir);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+
+        String filePath = uploadDir + File.separator + fileName;
+        File dest = new File(filePath);
+        try {
+            file.transferTo(dest);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ResourceNotFoundException("Failed to save avatar");
+        }
+
+        String avatarUrl = "/avatars/" + fileName;
+        currentUser.setAvatarUrl(avatarUrl);
+        userRepository.save(currentUser);
+
+        return avatarUrl.toString();
+    }
+
+    @Override
+    public User updateUser(User userToUpdate){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new ResourceNotFoundException("Invalid token");
@@ -133,9 +183,7 @@ public class UserServiceImpl implements UserService {
         if (currentUser == null) {
             throw new ResourceNotFoundException("User not found");
         }
-        if (!currentUser.getId().equals(userToUpdate.getId())) {
-            throw new ResourceNotFoundException("User not authorized to update this profile");
-        }
+
         // update
 
 
