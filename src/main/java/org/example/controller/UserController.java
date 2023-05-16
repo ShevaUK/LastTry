@@ -25,7 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-
+@CrossOrigin(origins = "https://front-book-tutorials.herokuapp.com")
 @RestController
 @RequestMapping("/user")
 public class UserController {
