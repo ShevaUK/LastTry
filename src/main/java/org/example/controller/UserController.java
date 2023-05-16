@@ -63,13 +63,13 @@ public class UserController {
 
     @PostMapping("/confirm")
     public ResponseEntity<Friendship> confirmFriendshipRequest(@RequestBody ConfirmFriendshipDTO confirmFriendshipDTO) {
-        Friendship friendship = friendshipService.confirmFriendshipRequest(confirmFriendshipDTO.getFriendshipId(),confirmFriendshipDTO.getReceiverUserId());
+        Friendship friendship = friendshipService.confirmFriendshipRequest(confirmFriendshipDTO.getFriendshipId());
         return new ResponseEntity<>(friendship, HttpStatus.OK);
     }
 
-    @PostMapping("/reject/")
+    @PostMapping("/reject")
     public ResponseEntity<Friendship> rejectFriendshipRequest(@RequestBody RejectFriendshipDTO rejectFriendshipDTO) {
-        Friendship friendship = friendshipService.rejectFriendshipRequest(rejectFriendshipDTO.getFriendshipId(),rejectFriendshipDTO.getRejectedById());
+        Friendship friendship = friendshipService.rejectFriendshipRequest(rejectFriendshipDTO.getFriendshipId());
         return new ResponseEntity<>(friendship, HttpStatus.OK);
     }
 
@@ -99,41 +99,5 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload avatar");
         }
     }
-
-//    @PutMapping("/me")
-//    public ResponseEntity<User> updateUser(@RequestHeader("Authorization") String token, @RequestBody User userToUpdate) {
-//        User updatedUser = userService.updateUser(token, userToUpdate, avatarFile);
-//        return ResponseEntity.ok(updatedUser);
-//    }
-//    @PostMapping("/upload-image")
-//    public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-//
-//        if (file.isEmpty()) {
-//            return "Error: Please select a file to upload.";
-//        }
-//
-//        // Отримання оригінального імені файлу
-//        String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
-//
-//        try {
-//
-//            Path uploadPath = Path.of(imageUploadDirectory);
-//            Path filePath = uploadPath.resolve(originalFilename).normalize();
-//
-//
-//            if (!Files.exists(uploadPath)) {
-//                Files.createDirectories(uploadPath);
-//            }
-//
-//
-//            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-//
-//
-//            return "Successfully uploaded the image.";
-//        } catch (IOException ex) {
-//            return "Error occurred while uploading the image.";
-//        }
-//    }
-
 
 }

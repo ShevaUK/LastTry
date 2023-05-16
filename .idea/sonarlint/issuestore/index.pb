@@ -7,5 +7,3 @@ i
 0src/main/java/org/example/utils/HelperUtils.java,3/2/329c9d67482926d58f773093f690a415593d7f44
 f
 6src/main/java/org/example/service/TutorialService.java,1/9/19b05661588e08883b6e1cee29eb4fb02d0cc58e
-h
-8src/main/java/org/example/service/FriendshipService.java,0/0/0006738c4bdc9f5a22b37ce6acdfb300d9f21287
