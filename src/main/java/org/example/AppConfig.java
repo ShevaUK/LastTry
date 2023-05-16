@@ -70,7 +70,7 @@ public class AppConfig  {
                 .requestMatchers("/account/**").permitAll()
                 .requestMatchers("/guest/**").permitAll()
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                .requestMatchers("/user/**").permitAll()
+                .requestMatchers("/user/**").hasAuthority("USER")
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/jwt/login").permitAll()
                 .anyRequest().authenticated()

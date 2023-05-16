@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
         return user;
     }
     @Override
-    public User getCurrentUser() {
+    public User getCurrentUser(HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             return null;

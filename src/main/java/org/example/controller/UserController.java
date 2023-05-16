@@ -81,8 +81,8 @@ public class UserController {
     }
 
     @GetMapping("/currentUser")
-    public ResponseEntity<User> getUser(HttpServletRequest request, HttpServletResponse response) {
-        User currentUser = userService.getCurrentUser();
+    public ResponseEntity<User> getUser(HttpServletRequest request) {
+        User currentUser = userService.getCurrentUser(request);
         return ResponseEntity.ok(currentUser);
     }
     @PutMapping("/update")
