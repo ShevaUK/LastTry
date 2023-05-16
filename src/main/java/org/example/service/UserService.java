@@ -11,8 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface UserService {
-    public User getCurrentUser(HttpServletRequest request,
-                               HttpServletResponse response);
+    public User getCurrentUser();
     BaseResponseDTO registerAccount(UserDTO userDTO);
     User getUserById(String userId);
 

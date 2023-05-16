@@ -125,13 +125,12 @@ public class UserServiceImpl implements UserService {
         return user;
     }
     @Override
-    public User getCurrentUser(HttpServletRequest request,
-                               HttpServletResponse response) {
+    public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             return null;
         }
-        response.setHeader("Access-Control-Allow-Origin", "*");
+
         String username = authentication.getName();
         User user = userRepository.findByUsername(username);
         User userWithoutPassword = new User();
@@ -140,6 +139,7 @@ public class UserServiceImpl implements UserService {
         userWithoutPassword.setFirstName(user.getFirstName());
         userWithoutPassword.setLastName(user.getLastName());
         userWithoutPassword.setRoles(user.getRoles());
+        userWithoutPassword.setTutorials(user.getTutorials());
         return userWithoutPassword;
     }
 

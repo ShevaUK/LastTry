@@ -25,7 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-@CrossOrigin(origins = "https://front-book-tutorials.herokuapp.com")
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -82,7 +82,7 @@ public class UserController {
 
     @GetMapping("/currentUser")
     public ResponseEntity<User> getUser(HttpServletRequest request, HttpServletResponse response) {
-        User currentUser = userService.getCurrentUser(request,response);
+        User currentUser = userService.getCurrentUser();
         return ResponseEntity.ok(currentUser);
     }
     @PutMapping("/update")
