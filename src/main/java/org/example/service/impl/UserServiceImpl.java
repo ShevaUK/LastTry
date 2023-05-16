@@ -3,6 +3,7 @@ package org.example.service.impl;
 
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.UserDTO;
 import org.example.entity.Role;
@@ -124,11 +125,13 @@ public class UserServiceImpl implements UserService {
         return user;
     }
     @Override
-    public User getCurrentUser(HttpServletRequest request) {
+    public User getCurrentUser(HttpServletRequest request,
+                               HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             return null;
         }
+        response.setHeader("Access-Control-Allow-Origin", "*");
         String username = authentication.getName();
         User user = userRepository.findByUsername(username);
         User userWithoutPassword = new User();

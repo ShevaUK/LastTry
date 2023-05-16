@@ -2,6 +2,7 @@ package org.example.controller;
 
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.example.dto.*;
 import org.example.entity.Friendship;
 import org.example.entity.Tutorial;
@@ -80,8 +81,8 @@ public class UserController {
     }
 
     @GetMapping("/currentUser")
-    public ResponseEntity<User> getUser(HttpServletRequest request) {
-        User currentUser = userService.getCurrentUser(request);
+    public ResponseEntity<User> getUser(HttpServletRequest request, HttpServletResponse response) {
+        User currentUser = userService.getCurrentUser(request,response);
         return ResponseEntity.ok(currentUser);
     }
     @PutMapping("/update")
