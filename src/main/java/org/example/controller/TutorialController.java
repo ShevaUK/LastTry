@@ -167,7 +167,7 @@ public class TutorialController {
         if (tutorialData.isPresent()) {
             Tutorial _tutorial = tutorialData.get();
             _tutorial.setTitle(tutorial.getTitle());
-            _tutorial.setDescription(tutorial.getDescription());
+            _tutorial.setAuthor(tutorial.getAuthor());
             _tutorial.setPublished(tutorial.isPublished());
             return new ResponseEntity<>(tutorialRepository.save(_tutorial), HttpStatus.OK);
         } else {

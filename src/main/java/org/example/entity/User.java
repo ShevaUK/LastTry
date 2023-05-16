@@ -1,4 +1,5 @@
 package org.example.entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -26,6 +27,7 @@ public class User {
     private String email;
     @Size(max = 120)
     @NotBlank
+    @JsonIgnore
     private String password;
 
     @DBRef

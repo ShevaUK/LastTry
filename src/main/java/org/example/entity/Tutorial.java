@@ -16,14 +16,14 @@ public class Tutorial {
     @NotNull(message="title cannot be null")
     private String title;
     @Size(min = 5,max = 100)
-    @NotNull(message=" description cannot be null")
-    private String description;
+    @NotNull(message=" author cannot be null")
+    private String author;
     private boolean published;
 
 
-    public Tutorial(String title, String description, boolean published) {
+    public Tutorial(String title, String author, boolean published) {
         this.title = title;
-        this.description = description;
+        this.author = author;
         this.published = published;
     }
     public String getId() {
@@ -38,12 +38,12 @@ public class Tutorial {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public boolean isPublished() {

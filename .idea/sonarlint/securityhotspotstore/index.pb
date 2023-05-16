@@ -1,8 +1,4 @@
 
-l
-<src/main/java/org/example/controller/TutorialController.java,e/a/ea40abf62975bcfe2e9424a3861c177a521f4280
-n
->src/main/java/org/example/service/impl/TutorialServiceImp.java,5/e/5e41f9a87cf7e373d7a70b26edf22a03212bfbbd
 h
 8src/main/java/org/example/controller/LastController.java,f/7/f7f400d7bd0a94ae6d223a3cbc53296535a4938f
 i

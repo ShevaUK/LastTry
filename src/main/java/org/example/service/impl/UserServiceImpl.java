@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         Set<Role> roles = new HashSet<>();
-        roles.add(roleRepository.findByName(userDTO.getRole()));
+        roles.add(roleRepository.findByName("USER"));
         user.setRoles(roles);
         return user;
     }
@@ -85,13 +85,16 @@ public class UserServiceImpl implements UserService {
         if (!ObjectUtils.isEmpty(user)) {
             throw new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Username had existed");
         }
+        if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
+            throw new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Passwords do not match");
+        }
 
 
         //validate role
-        List<String> roles = roleRepository.findAll().stream().map(Role::getName).toList();
-        if (!roles.contains(userDTO.getRole())) {
-            throw new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Invalid role");
-        }
+//        List<String> roles = roleRepository.findAll().stream().map(Role::getName).toList();
+//        if (!roles.contains(userDTO.getRole())) {
+//            throw new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Invalid role");
+//        }
     }
     @Override
     public User getUserById(String userId) {
@@ -127,7 +130,14 @@ public class UserServiceImpl implements UserService {
             return null;
         }
         String username = authentication.getName();
-        return userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username);
+        User userWithoutPassword = new User();
+        userWithoutPassword.setUsername(user.getUsername());
+        userWithoutPassword.setEmail(user.getEmail());
+        userWithoutPassword.setFirstName(user.getFirstName());
+        userWithoutPassword.setLastName(user.getLastName());
+        userWithoutPassword.setRoles(user.getRoles());
+        return userWithoutPassword;
     }
 
     @Override
