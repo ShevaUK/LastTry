@@ -29,6 +29,8 @@ public class User {
     @NotBlank
     @JsonIgnore
     private String password;
+    private String firstName;
+    private String lastName;
 
     @DBRef
     private Set<Role> roles = new HashSet<>();
@@ -36,8 +38,7 @@ public class User {
     private List<Friendship> friendships;
     @DBRef
     private List<Tutorial> tutorials;
-    private String firstName;
-    private String lastName;
+
     private String avatarUrl;
     public User() {
     }
