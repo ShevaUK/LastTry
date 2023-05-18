@@ -134,12 +134,14 @@ public class UserServiceImpl implements UserService {
         String username = authentication.getName();
         User user = userRepository.findByUsername(username);
         User userWithoutPassword = new User();
+        userWithoutPassword.setId(user.getId());
         userWithoutPassword.setUsername(user.getUsername());
         userWithoutPassword.setEmail(user.getEmail());
         userWithoutPassword.setFirstName(user.getFirstName());
         userWithoutPassword.setLastName(user.getLastName());
         userWithoutPassword.setRoles(user.getRoles());
         userWithoutPassword.setTutorials(user.getTutorials());
+        userWithoutPassword.setAvatarUrl(user.getAvatarUrl());
         return userWithoutPassword;
     }
 
