@@ -6,7 +6,10 @@ package org.example.entity;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
 @Document(collection = "tutorials")
 public class Tutorial {
     @Id
@@ -19,6 +22,8 @@ public class Tutorial {
     @NotNull(message=" author cannot be null")
     private String author;
     private boolean published;
+    @DBRef
+    private User user;
 
 
     public Tutorial(String title, String author, boolean published) {

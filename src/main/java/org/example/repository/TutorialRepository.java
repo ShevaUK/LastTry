@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import jakarta.validation.constraints.NotNull;
 import org.example.entity.Tutorial;
+import org.example.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,4 +22,6 @@ public interface TutorialRepository extends MongoRepository<Tutorial, String>{
     List<Tutorial> findByTitleContaining(String title, Sort sort);
     @NotNull
     Optional<Tutorial> findById(Tutorial tutorial,String id);
+
+
 }

@@ -17,13 +17,19 @@ import org.example.repository.UserRepository;
 import org.example.service.UserService;
 import org.example.utils.BaseResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -96,6 +102,15 @@ public class UserServiceImpl implements UserService {
 //        if (!roles.contains(userDTO.getRole())) {
 //            throw new BaseException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Invalid role");
 //        }
+    }
+    private Sort.Direction getSortDirection(String direction) {
+        if (direction.equals("asc")) {
+            return Sort.Direction.ASC;
+        } else if (direction.equals("desc")) {
+            return Sort.Direction.DESC;
+        }
+
+        return Sort.Direction.ASC;
     }
     @Override
     public User getUserById(String userId) {
@@ -201,13 +216,32 @@ public class UserServiceImpl implements UserService {
 
         // update
 
-
         currentUser.setUsername(userToUpdate.getUsername());
         currentUser.setEmail(userToUpdate.getEmail());
         currentUser.setFirstName(userToUpdate.getFirstName());
         currentUser.setLastName(userToUpdate.getLastName());
         currentUser.setPassword(userToUpdate.getPassword());
         return userRepository.save(currentUser);
+    }
+    @Override
+    public ResponseEntity<List<Tutorial>> getUserTutorials(
+            HttpServletRequest request){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        try {
+            String username = authentication.getName();
+            User user = userRepository.findByUsername(username);
+            List<Tutorial> tutorials = new ArrayList<>();
+
+            tutorials = user.getTutorials();
+
+            return new ResponseEntity<>(tutorials, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 }
 
