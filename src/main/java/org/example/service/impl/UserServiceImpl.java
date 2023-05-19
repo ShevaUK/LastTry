@@ -26,6 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -171,6 +173,15 @@ public class UserServiceImpl implements UserService {
             // create file name
             String fileName = System.currentTimeMillis() + "-" + image.getOriginalFilename();
             Path filePath = Path.of(uploadPath, fileName);
+
+            File directory = new File(uploadPath);
+            if (!directory.exists()) {
+                if (directory.mkdirs()) {
+                    System.out.println("Directory created: " + uploadPath);
+                } else {
+                    throw new ResourceNotFoundException("Failed to create directory: " + uploadPath);
+                }
+            }
 
             Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
