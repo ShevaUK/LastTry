@@ -23,7 +23,7 @@ public interface UserService {
     User addUser(User user);
     public User updateUser( User userToUpdate);
     User addTutorialById(String userId, String tutorialId);
-    String saveAvatar(MultipartFile file)throws IOException;
-    public ResponseEntity<List<Tutorial>> getUserTutorials(
-            HttpServletRequest request);
+
+    public ResponseEntity<List<Tutorial>> getUserTutorials(HttpServletRequest request);
+    public String uploadImage(@RequestParam("image") MultipartFile image);
 }

@@ -2,7 +2,6 @@ package org.example.controller;
 
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.example.dto.*;
 import org.example.entity.Friendship;
 import org.example.entity.Tutorial;
@@ -15,29 +14,22 @@ import org.example.service.TutorialService;
 import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    @Value("${file.upload-dir}")
-    private String fileUploadDir;
+    @Value("${upload.path}")
+    private String uploadPath;
 
     @Autowired
     private UserRepository userRepository;
@@ -99,14 +91,20 @@ public class UserController {
         User updatedUser = userService.updateUser( userToUpdate);
         return ResponseEntity.ok(updatedUser);
     }
-    @PostMapping("/avatars")
-    public ResponseEntity<String> uploadAvatar(@RequestParam("avatar") MultipartFile file) {
+    @PostMapping("/images")
+    public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile image) {
+        String avatarUrl = String.valueOf(userService.uploadImage(image));
+        return ResponseEntity.ok(avatarUrl);
+    }
+    @GetMapping("/{fileName}")
+    public ResponseEntity<byte[]> getImage(@PathVariable String fileName) {
         try {
-            String avatarUrl = userService.saveAvatar(file);
-            return ResponseEntity.ok(avatarUrl);
+            Path imagePath = Path.of(uploadPath, fileName);
+            byte[] imageBytes = Files.readAllBytes(imagePath);
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(imageBytes);
         } catch (IOException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload avatar");
+            return ResponseEntity.notFound().build();
         }
     }
     @GetMapping("/tutorials")

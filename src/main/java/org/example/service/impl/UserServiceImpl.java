@@ -3,7 +3,6 @@ package org.example.service.impl;
 
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.UserDTO;
 import org.example.entity.Role;
@@ -17,9 +16,6 @@ import org.example.repository.UserRepository;
 import org.example.service.UserService;
 import org.example.utils.BaseResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,12 +24,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 @Service
@@ -46,8 +42,8 @@ public class UserServiceImpl implements UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
     private final TutorialRepository tutorialRepository;
-    @Value("${file.upload-dir}")
-    private String fileUploadDir;
+    @Value("${upload.path}")
+    private String uploadPath;
 
     @Override
     public BaseResponseDTO registerAccount(UserDTO userDTO) {
@@ -161,45 +157,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String saveAvatar(MultipartFile file) throws IOException {
+    public String uploadImage(@RequestParam("image") MultipartFile image) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new ResourceNotFoundException("Invalid token");
         }
-
         String username = authentication.getName();
         User currentUser = userRepository.findByUsername(username);
         if (currentUser == null) {
             throw new ResourceNotFoundException("User not found");
         }
-
-
-        String fileName = UUID.randomUUID().toString() + "." + StringUtils.getFilenameExtension(file.getOriginalFilename());
-
-
-        String uploadDir = fileUploadDir + File.separator + "avatars";
-
-
-        File directory = new File(uploadDir);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-
-
-        String filePath = uploadDir + File.separator + fileName;
-        File dest = new File(filePath);
         try {
-            file.transferTo(dest);
+            // create file name
+            String fileName = System.currentTimeMillis() + "-" + image.getOriginalFilename();
+            Path filePath = Path.of(uploadPath, fileName);
+
+            Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            String imageUrl = "/user/" + fileName;
+            currentUser.setAvatarUrl(imageUrl);
+            userRepository.save(currentUser);
+            return imageUrl;
         } catch (IOException e) {
             e.printStackTrace();
-            throw new ResourceNotFoundException("Failed to save avatar");
+            throw new ResourceNotFoundException("Error download image");
         }
 
-        String avatarUrl = "/avatars/" + fileName;
-        currentUser.setAvatarUrl(avatarUrl);
-        userRepository.save(currentUser);
-
-        return avatarUrl.toString();
     }
 
     @Override
