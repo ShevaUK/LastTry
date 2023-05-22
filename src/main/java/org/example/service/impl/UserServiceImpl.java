@@ -5,11 +5,10 @@ package org.example.service.impl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.UserDTO;
-import org.example.entity.Role;
-import org.example.entity.Tutorial;
-import org.example.entity.User;
+import org.example.entity.*;
 import org.example.exception.BaseException;
 import org.example.exception.ResourceNotFoundException;
+import org.example.repository.FriendshipRepository;
 import org.example.repository.RoleRepository;
 import org.example.repository.TutorialRepository;
 import org.example.repository.UserRepository;
@@ -37,6 +36,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private final FriendshipRepository friendshipRepository;
 
     private final UserRepository userRepository;
 
@@ -112,7 +112,18 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public User getUserById(String userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));}
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+
+        User userWithoutPassword = new User();
+        userWithoutPassword.setId(user.getId());
+        userWithoutPassword.setUsername(user.getUsername());
+        userWithoutPassword.setEmail(user.getEmail());
+        userWithoutPassword.setFirstName(user.getFirstName());
+        userWithoutPassword.setLastName(user.getLastName());
+        userWithoutPassword.setRoles(user.getRoles());
+        userWithoutPassword.setTutorials(user.getTutorials());
+        userWithoutPassword.setAvatarUrl(user.getAvatarUrl());
+        return userWithoutPassword;}
     @Override
     public User addUser(User user) {
         return userRepository.save(user);
@@ -236,6 +247,47 @@ public class UserServiceImpl implements UserService {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+    @Override
+
+    public List<User> findUsersWithCommonTutorials(List<String> tutorialIds) {
+        List<User> usersWithCommonTutorials = new ArrayList<>();
+
+        for (String tutorialId : tutorialIds) {
+            Optional<Tutorial> tutorial = tutorialRepository.findById(tutorialId);
+            if (tutorial.isPresent()) {
+                List<User> users = userRepository.findByTutorials(tutorial.get());
+                usersWithCommonTutorials.addAll(users);
+            }
+        }
+
+        Set<User> uniqueUsers = new HashSet<>(usersWithCommonTutorials);
+        usersWithCommonTutorials.clear();
+        usersWithCommonTutorials.addAll(uniqueUsers);
+
+        return usersWithCommonTutorials;
+    }
+    @Override
+    public List<User> getFriendsForUser(String userId) {
+        List<Friendship> sentFriendships = friendshipRepository.findAllBySenderUserIdAndStatus(userId, FriendshipStatus.ACCEPTED);
+        List<Friendship> receivedFriendships = friendshipRepository.findAllByReceiverUserIdAndStatus(userId, FriendshipStatus.ACCEPTED);
+        List<User> friends = new ArrayList<>();
+
+        for (Friendship friendship : sentFriendships) {
+            User friend = userRepository.findById(friendship.getReceiverUserId()).orElse(null);
+            if (friend != null) {
+                friends.add(friend);
+            }
+        }
+
+        for (Friendship friendship : receivedFriendships) {
+            User friend = userRepository.findById(friendship.getSenderUserId()).orElse(null);
+            if (friend != null) {
+                friends.add(friend);
+            }
+        }
+
+        return friends;
     }
 }
 

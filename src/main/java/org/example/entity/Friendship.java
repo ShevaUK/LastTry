@@ -2,6 +2,7 @@ package org.example.entity;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -25,6 +26,8 @@ public class Friendship {
     private FriendshipStatus status;
     @CreatedDate
     private Date createdAt;
+    @DBRef
+    private User user;
     public Friendship() {
 
     }

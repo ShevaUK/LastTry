@@ -86,6 +86,14 @@ public class UserController {
         User currentUser = userService.getCurrentUser(request);
         return ResponseEntity.ok(currentUser);
     }
+    @GetMapping("/{userId}/info")
+    public ResponseEntity<User> getUser(@PathVariable("userId") String userId) {
+        User userById = userService.getUserById(userId);
+        if (userById == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userById);
+    }
     @PutMapping("/update")
     public ResponseEntity<User> updateUser(@RequestHeader("Authorization") String token, @RequestBody User userToUpdate) {
         User updatedUser = userService.updateUser( userToUpdate);
@@ -112,6 +120,23 @@ public class UserController {
             HttpServletRequest request){
        return userService.getUserTutorials(request);
 
+    }
+
+    @GetMapping("/common-tutorials")
+    public ResponseEntity<List<User>> getUsersWithCommonTutorials(@RequestParam("tutorialIds") List<String> tutorialIds) {
+        List<User> users = userService.findUsersWithCommonTutorials(tutorialIds);
+        if (users == null || users.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(users);
+    }
+    @GetMapping("/{userId}/friends")
+    public ResponseEntity<List<User>> getFriendsForUser(@PathVariable("userId") String userId) {
+        List<User> users = userService.getFriendsForUser(userId);
+        if (users == null || users.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(users);
     }
 
 
