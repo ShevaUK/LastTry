@@ -268,26 +268,33 @@ public class UserServiceImpl implements UserService {
         return usersWithCommonTutorials;
     }
     @Override
-    public List<User> getFriendsForUser(String userId) {
+    public List<User> getFriendsForUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResourceNotFoundException("Invalid token");
+        }
+        String username = authentication.getName();
+        User currentUser = userRepository.findByUsername(username);
+        String userId = currentUser.getId();
         List<Friendship> sentFriendships = friendshipRepository.findAllBySenderUserIdAndStatus(userId, FriendshipStatus.ACCEPTED);
         List<Friendship> receivedFriendships = friendshipRepository.findAllByReceiverUserIdAndStatus(userId, FriendshipStatus.ACCEPTED);
-        List<User> friends = new ArrayList<>();
+        List<User> myFriends = new ArrayList<>();
 
         for (Friendship friendship : sentFriendships) {
             User friend = userRepository.findById(friendship.getReceiverUserId()).orElse(null);
             if (friend != null) {
-                friends.add(friend);
+                myFriends.add(friend);
             }
         }
 
         for (Friendship friendship : receivedFriendships) {
             User friend = userRepository.findById(friendship.getSenderUserId()).orElse(null);
             if (friend != null) {
-                friends.add(friend);
+                myFriends.add(friend);
             }
         }
 
-        return friends;
+        return myFriends;
     }
 }
 

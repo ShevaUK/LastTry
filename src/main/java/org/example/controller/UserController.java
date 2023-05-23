@@ -130,13 +130,13 @@ public class UserController {
         }
         return ResponseEntity.ok(users);
     }
-    @GetMapping("/{userId}/friends")
-    public ResponseEntity<List<User>> getFriendsForUser(@PathVariable("userId") String userId) {
-        List<User> users = userService.getFriendsForUser(userId);
-        if (users == null || users.isEmpty()) {
+    @GetMapping("/friends")
+    public ResponseEntity<List<User>> getFriendsForUser() {
+        List<User> friends = userService.getFriendsForUser();
+        if (friends == null || friends.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(friends);
     }
 
 

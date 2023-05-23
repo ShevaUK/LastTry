@@ -24,5 +24,5 @@ public interface UserService {
     public ResponseEntity<List<Tutorial>> getUserTutorials(HttpServletRequest request);
     public String uploadImage(@RequestParam("image") MultipartFile image);
     List<User> findUsersWithCommonTutorials(List<String> tutorialIds);
-    public List<User> getFriendsForUser(String userId);
+    public List<User> getFriendsForUser();
 }
