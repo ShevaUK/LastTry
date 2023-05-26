@@ -34,8 +34,11 @@ public class User {
 
     @DBRef
     private Set<Role> roles = new HashSet<>();
-    @DBRef
-    private List<Friendship> friendships;
+
+
+
+
+    private List<String> friendIds;
     @DBRef
     private List<Tutorial> tutorials;
 
@@ -92,13 +95,7 @@ public class User {
         this.email = email;
     }
 
-    public List<Friendship> getFriendships() {
-        return friendships;
-    }
 
-    public void setFriendships(List<Friendship> friendships) {
-        this.friendships = friendships;
-    }
 
     public List<Tutorial> getTutorials() {
         return tutorials;
@@ -111,6 +108,10 @@ public class User {
     public String getFirstName() {
         return firstName;
     }
+
+    public List<String> getFriendIds() {return friendIds;}
+
+    public void setFriendIds(List<String> friendIds) {this.friendIds = friendIds;}
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;

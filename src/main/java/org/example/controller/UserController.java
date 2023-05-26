@@ -86,7 +86,7 @@ public class UserController {
         User currentUser = userService.getCurrentUser(request);
         return ResponseEntity.ok(currentUser);
     }
-    @GetMapping("/{userId}/info")
+    @GetMapping("/{userId}")
     public ResponseEntity<User> getUser(@PathVariable("userId") String userId) {
         User userById = userService.getUserById(userId);
         if (userById == null) {
@@ -104,7 +104,7 @@ public class UserController {
         String avatarUrl = String.valueOf(userService.uploadImage(image));
         return ResponseEntity.ok(avatarUrl);
     }
-    @GetMapping("/{fileName}")
+    @GetMapping("/avatar/{fileName}")
     public ResponseEntity<byte[]> getImage(@PathVariable String fileName) {
         try {
             Path imagePath = Path.of(uploadPath, fileName);
