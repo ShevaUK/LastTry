@@ -198,7 +198,7 @@ public class UserServiceImpl implements UserService {
 
             Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            String imageUrl = "/user/" + fileName;
+            String imageUrl = "/user/avatar/" + fileName;
             currentUser.setAvatarUrl(imageUrl);
             userRepository.save(currentUser);
             return imageUrl;
