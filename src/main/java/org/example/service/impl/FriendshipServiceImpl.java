@@ -62,25 +62,19 @@ public class FriendshipServiceImpl implements FriendshipService {
                 if (receiverUser != null && receiverUser.getUsername().equals(currentUsername)) {
                     request.setStatus(FriendshipStatus.ACCEPTED);
                     friendshipRepository.save(request);
-                    List<String> receiverUserFriends = receiverUser.getFriendIds();
-                    if (receiverUserFriends == null) {
-                        receiverUserFriends = new ArrayList<>();
+
+                    if (receiverUser.getFriends() == null) {
+                        receiverUser.setFriends(new ArrayList<>());
                     }
-
-
-                    receiverUserFriends.add(senderUser.getId());
-                    receiverUser.setFriendIds(receiverUserFriends);
+                    receiverUser.getFriends().add(senderUser);
                     userRepository.save(receiverUser);
 
-                    List<String> senderUserFriends = senderUser.getFriendIds();
-                    if (senderUserFriends == null) {
-                        senderUserFriends = new ArrayList<>();
+                    if (senderUser.getFriends() == null) {
+                        senderUser.setFriends(new ArrayList<>());
                     }
-
-                    senderUserFriends.add(receiverUser.getId());
-                    senderUser.setFriendIds(senderUserFriends);
+                    senderUser.getFriends().add(receiverUser);
                     userRepository.save(senderUser);
-
+//
                     return request;
                 } else {
                     throw new IllegalArgumentException("Only the receiver user can confirm this friendship request.");
@@ -92,25 +86,7 @@ public class FriendshipServiceImpl implements FriendshipService {
             throw new IllegalArgumentException("Friend request not found.");
         }
     }
-//        Optional<Friendship> friendship = friendshipRepository.findById(friendshipId);
-//        if (friendship.isPresent()) {
-//            Friendship request = friendship.get();
-//            if (request.getStatus() == FriendshipStatus.PENDING) {
-//                if (request.getReceiverUserId().equals(receiverUserId)) {
-//                    request.setStatus(FriendshipStatus.ACCEPTED);
-//                    friendshipRepository.save(request);
-//
-//                    return request;
-//                }else {
-//                    throw new IllegalArgumentException("Only receiver user can confirm this friendship request.");
-//                }
-//            } else {
-//                throw new IllegalArgumentException("Friend request has already been accepted or rejected.");
-//            }
-//        } else {
-//            throw new IllegalArgumentException("Friend request not found.");
-//        }
-//    }
+
     @Override
     public Friendship rejectFriendshipRequest(String friendshipId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -124,26 +100,22 @@ public class FriendshipServiceImpl implements FriendshipService {
                         .orElseThrow(() -> new ResourceNotFoundException("Receiver user not found"));
                 User senderUser = userRepository.findById(request.getSenderUserId())
                         .orElseThrow(() -> new ResourceNotFoundException("Sender user not found"));
-
                 if (receiverUser.getUsername().equals(currentUsername) || senderUser.getUsername().equals(currentUsername)) {
                     request.setStatus(FriendshipStatus.REJECTED);
                     friendshipRepository.save(request);
 
 
-
-                    List<String> receiverUserFriends = receiverUser.getFriendIds();
-                    if (receiverUserFriends != null) {
-                        receiverUserFriends.remove(senderUser.getId());
-                        receiverUser.setFriendIds(receiverUserFriends);
+                    if (receiverUser.getFriends() != null) {
+                        receiverUser.getFriends().removeIf(user -> user.getId().equals(senderUser.getId()));
                         userRepository.save(receiverUser);
                     }
 
-                    List<String> senderUserFriends = senderUser.getFriendIds();
-                    if (senderUserFriends != null) {
-                        senderUserFriends.remove(receiverUser.getId());
-                        senderUser.setFriendIds(senderUserFriends);
+                    if (senderUser.getFriends() != null) {
+                        senderUser.getFriends().removeIf(user -> user.getId().equals(receiverUser.getId()));
                         userRepository.save(senderUser);
                     }
+
+//
                     return request;
                 } else {
                     throw new IllegalArgumentException("Invalid rejectedBy parameter. It must be equal to either senderUserId or receiverUserId.");
@@ -155,29 +127,6 @@ public class FriendshipServiceImpl implements FriendshipService {
             throw new IllegalArgumentException("Friend request not found.");
         }
     }
-//    public Friendship rejectFriendshipRequest(String friendshipId,String rejectedById) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String currentUsername = authentication.getName();
-//        System.out.println(currentUsername);
-//
-//        Optional<Friendship> friendship = friendshipRepository.findById(friendshipId);
-//        if (friendship.isPresent()) {
-//            Friendship request = friendship.get();
-//            if (request.getStatus() == FriendshipStatus.PENDING) {
-//                if (rejectedById.equals(request.getReceiverUserId()) || rejectedById.equals(request.getSenderUserId())) {
-//                request.setStatus(FriendshipStatus.REJECTED);
-//                friendshipRepository.save(request);
-//                return request;
-//                } else {
-//                    throw new IllegalArgumentException("Invalid rejectedBy parameter. It must be equal to either senderUserId or receiverUserId.");
-//                }
-//            } else {
-//                throw new IllegalArgumentException("Friend request has already been accepted or rejected.");
-//            }
-//        } else {
-//            throw new IllegalArgumentException("Friend request not found.");
-//        }
-//    }
     @Override
     public Friendship getFriendshipRequest(String senderUserId, String receiverUserId) {
         return friendshipRepository.findBySenderUserIdAndReceiverUserId(senderUserId, receiverUserId)

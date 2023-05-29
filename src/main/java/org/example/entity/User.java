@@ -1,5 +1,6 @@
 package org.example.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -37,8 +38,9 @@ public class User {
 
 
 
-
-    private List<String> friendIds;
+    @DBRef
+    @JsonIgnoreProperties("friends")
+    private List<User> friends;
     @DBRef
     private List<Tutorial> tutorials;
 
@@ -109,9 +111,9 @@ public class User {
         return firstName;
     }
 
-    public List<String> getFriendIds() {return friendIds;}
+    public List<User> getFriends() {return friends;}
 
-    public void setFriendIds(List<String> friendIds) {this.friendIds = friendIds;}
+    public void setFriends(List<User> friends) {this.friends = friends;}
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;

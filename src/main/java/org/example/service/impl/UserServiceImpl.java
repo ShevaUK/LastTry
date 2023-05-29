@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
         userWithoutPassword.setFirstName(user.getFirstName());
         userWithoutPassword.setLastName(user.getLastName());
         userWithoutPassword.setRoles(user.getRoles());
-        userWithoutPassword.setFriendIds(user.getFriendIds());
+        userWithoutPassword.setFriends(user.getFriends());
         userWithoutPassword.setTutorials(user.getTutorials());
         userWithoutPassword.setAvatarUrl(user.getAvatarUrl());
         return userWithoutPassword;}
@@ -165,7 +165,7 @@ public class UserServiceImpl implements UserService {
         userWithoutPassword.setFirstName(user.getFirstName());
         userWithoutPassword.setLastName(user.getLastName());
         userWithoutPassword.setRoles(user.getRoles());
-        userWithoutPassword.setFriendIds(user.getFriendIds());
+        userWithoutPassword.setFriends(user.getFriends());
         userWithoutPassword.setTutorials(user.getTutorials());
         userWithoutPassword.setAvatarUrl(user.getAvatarUrl());
         return userWithoutPassword;
@@ -251,7 +251,6 @@ public class UserServiceImpl implements UserService {
 
     }
     @Override
-
     public List<User> findUsersWithCommonTutorials(List<String> tutorialIds) {
         List<User> usersWithCommonTutorials = new ArrayList<>();
 
@@ -277,39 +276,24 @@ public class UserServiceImpl implements UserService {
         }
         String username = authentication.getName();
         User currentUser = userRepository.findByUsername(username);
-        List<String> friendIds = currentUser.getFriendIds();
+        String userId = currentUser.getId();
+        List<Friendship> sentFriendships = friendshipRepository.findAllBySenderUserIdAndStatus(userId, FriendshipStatus.ACCEPTED);
+        List<Friendship> receivedFriendships = friendshipRepository.findAllByReceiverUserIdAndStatus(userId, FriendshipStatus.ACCEPTED);
         List<User> myFriends = new ArrayList<>();
 
-        for (String friendId : friendIds) {
-            User friend = userRepository.findById(friendId).orElse(null);
+        for (Friendship friendship : sentFriendships) {
+            User friend = userRepository.findById(friendship.getReceiverUserId()).orElse(null);
             if (friend != null) {
                 myFriends.add(friend);
             }
         }
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication == null || !authentication.isAuthenticated()) {
-//            throw new ResourceNotFoundException("Invalid token");
-//        }
-//        String username = authentication.getName();
-//        User currentUser = userRepository.findByUsername(username);
-//        String userId = currentUser.getId();
-//        List<Friendship> sentFriendships = friendshipRepository.findAllBySenderUserIdAndStatus(userId, FriendshipStatus.ACCEPTED);
-//        List<Friendship> receivedFriendships = friendshipRepository.findAllByReceiverUserIdAndStatus(userId, FriendshipStatus.ACCEPTED);
-//        List<User> myFriends = new ArrayList<>();
-//
-//        for (Friendship friendship : sentFriendships) {
-//            User friend = userRepository.findById(friendship.getReceiverUserId()).orElse(null);
-//            if (friend != null) {
-//                myFriends.add(friend);
-//            }
-//        }
-//
-//        for (Friendship friendship : receivedFriendships) {
-//            User friend = userRepository.findById(friendship.getSenderUserId()).orElse(null);
-//            if (friend != null) {
-//                myFriends.add(friend);
-//            }
-//        }
+
+        for (Friendship friendship : receivedFriendships) {
+            User friend = userRepository.findById(friendship.getSenderUserId()).orElse(null);
+            if (friend != null) {
+                myFriends.add(friend);
+            }
+        }
 
         return myFriends;
     }
