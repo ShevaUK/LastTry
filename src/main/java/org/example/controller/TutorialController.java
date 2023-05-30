@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 @RestController
-@RequestMapping("/guest")
+@RequestMapping("/admin")
 public class TutorialController {
     @Autowired
     TutorialRepository tutorialRepository;
@@ -34,10 +34,6 @@ public class TutorialController {
         return Sort.Direction.ASC;
     }
 
-    @GetMapping("/index")
-    public ResponseEntity<String> index(){
-        return ResponseEntity.ok("Welcome to my page!");
-    }
     @GetMapping("/sortedtutorials")
     public ResponseEntity<List<Tutorial>> getAllTutorials(@RequestParam(defaultValue = "id,desc") String[] sort) {
 
