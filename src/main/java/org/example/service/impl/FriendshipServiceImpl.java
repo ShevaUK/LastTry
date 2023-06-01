@@ -30,26 +30,54 @@ public class FriendshipServiceImpl implements FriendshipService {
     private FriendshipRepository friendshipRepository;
     @Override
     public Friendship createFriendshipRequest(String senderUserId,String receiverUserId){
-        Optional<Friendship> existingFriendship = friendshipRepository.findBySenderUserIdAndReceiverUserId(senderUserId, receiverUserId);
-        if (existingFriendship.isPresent()) {
-            Friendship friendship = existingFriendship.get();
-            friendship.setStatus(FriendshipStatus.PENDING);
-            return friendshipRepository.save(friendship);
-        }else {
+        Optional<User> senderUserOptional = userRepository.findById(senderUserId);
+        Optional<User> receiverUserOptional = userRepository.findById(receiverUserId);
 
-            Friendship friendship = new Friendship();
-            friendship.setSenderUserId(senderUserId);
-            friendship.setReceiverUserId(receiverUserId);
-            friendship.setStatus(FriendshipStatus.PENDING);
+        if (senderUserOptional.isPresent() && receiverUserOptional.isPresent()) {
+            User senderUser = senderUserOptional.get();
+            User receiverUser = receiverUserOptional.get();
 
-            return friendshipRepository.save(friendship);
+            Optional<Friendship> existingFriendship = friendshipRepository.findBySenderUserIdAndReceiverUserId(senderUserId, receiverUserId);
+            if (existingFriendship.isPresent()) {
+                Friendship friendship = existingFriendship.get();
+                friendship.setStatus(FriendshipStatus.PENDING);
+                return friendshipRepository.save(friendship);
+            } else {
+                Friendship friendship = new Friendship();
+                friendship.setSenderUserId(senderUserId);
+                friendship.setReceiverUserId(receiverUserId);
+                friendship.setStatus(FriendshipStatus.PENDING);
+
+                List<Friendship> senderPendingFriendships = senderUser.getPendingFriendships();
+                if (senderPendingFriendships == null) {
+                    senderPendingFriendships = new ArrayList<>();
+                    senderUser.setPendingFriendships(senderPendingFriendships);
+                }
+                senderPendingFriendships.add(friendship);
+
+                List<Friendship> receiverPendingFriendships = receiverUser.getPendingFriendships();
+                if (receiverPendingFriendships == null) {
+                    receiverPendingFriendships = new ArrayList<>();
+                    receiverUser.setPendingFriendships(receiverPendingFriendships);
+                }
+                receiverPendingFriendships.add(friendship);
+
+                friendshipRepository.save(friendship); // Save the friendship first to generate the ID
+
+                userRepository.save(senderUser);
+                userRepository.save(receiverUser);
+
+                return friendship;
+            }
         }
+
+        throw new IllegalArgumentException("User not found.");
     }
+
     @Override
     public Friendship confirmFriendshipRequest(String friendshipId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
-        System.out.println(currentUsername);
 
         Optional<Friendship> friendship = friendshipRepository.findById(friendshipId);
         if (friendship.isPresent()) {
@@ -74,7 +102,18 @@ public class FriendshipServiceImpl implements FriendshipService {
                     }
                     senderUser.getFriends().add(receiverUser);
                     userRepository.save(senderUser);
-//
+
+                    // Delete Friendship from pendingFriendships
+                    if (receiverUser.getPendingFriendships() != null) {
+                        receiverUser.getPendingFriendships().removeIf(friendshipObj -> friendshipObj.getId().equals(request.getId()));
+                        userRepository.save(receiverUser);
+                    }
+
+                    if (senderUser.getPendingFriendships() != null) {
+                        senderUser.getPendingFriendships().removeIf(friendshipObj -> friendshipObj.getId().equals(request.getId()));
+                        userRepository.save(senderUser);
+                    }
+
                     return request;
                 } else {
                     throw new IllegalArgumentException("Only the receiver user can confirm this friendship request.");
@@ -115,7 +154,17 @@ public class FriendshipServiceImpl implements FriendshipService {
                         userRepository.save(senderUser);
                     }
 
-//
+                    // Delete Friendship from pendingFriendships
+                    if (receiverUser.getPendingFriendships() != null) {
+                        receiverUser.getPendingFriendships().removeIf(friendshipObj -> friendshipObj.getId().equals(request.getId()));
+                        userRepository.save(receiverUser);
+                    }
+
+                    if (senderUser.getPendingFriendships() != null) {
+                        senderUser.getPendingFriendships().removeIf(friendshipObj -> friendshipObj.getId().equals(request.getId()));
+                        userRepository.save(senderUser);
+                    }
+
                     return request;
                 } else {
                     throw new IllegalArgumentException("Invalid rejectedBy parameter. It must be equal to either senderUserId or receiverUserId.");

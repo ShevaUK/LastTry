@@ -26,8 +26,6 @@ public class Friendship {
     private FriendshipStatus status;
     @CreatedDate
     private Date createdAt;
-    @DBRef
-    private User user;
     public Friendship() {
 
     }

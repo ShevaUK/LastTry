@@ -35,6 +35,8 @@ public class User {
 
     @DBRef
     private Set<Role> roles = new HashSet<>();
+    @DBRef
+    private List<Friendship> pendingFriendships;
 
 
 
@@ -97,7 +99,9 @@ public class User {
         this.email = email;
     }
 
+    public List<Friendship> getPendingFriendships() {return pendingFriendships;}
 
+    public void setPendingFriendships(List<Friendship> pendingFriendships) {this.pendingFriendships = pendingFriendships;}
 
     public List<Tutorial> getTutorials() {
         return tutorials;
