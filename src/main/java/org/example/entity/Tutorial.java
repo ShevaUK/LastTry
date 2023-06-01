@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.Map;
+
 @Document(collection = "tutorials")
 public class Tutorial {
     @Id
@@ -24,6 +26,8 @@ public class Tutorial {
     private boolean published;
     @DBRef
     private User user;
+
+    private Map<String, Review> userReviews;
 
 
     public Tutorial(String title, String author, boolean published) {
@@ -58,5 +62,8 @@ public class Tutorial {
     public void setPublished(boolean published) {
         this.published = published;
     }
+    public Map<String, Review> getUserReviews() {return userReviews;}
+
+    public void setUserReviews(Map<String, Review> userReviews) {this.userReviews = userReviews;}
 
 }

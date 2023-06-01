@@ -150,6 +150,41 @@ public class UserServiceImpl implements UserService {
         return user;
     }
     @Override
+    public User addReviewToTutorial(String tutorialId,Review review) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResourceNotFoundException("Invalid token");
+        }
+        String username = authentication.getName();
+        User currentUser = userRepository.findByUsername(username);
+//        String userId = currentUser.getId();
+        Tutorial tutorial = tutorialRepository.findById(tutorialId)
+                .orElseThrow(() -> new ResourceNotFoundException("Tutorial", "id", tutorialId));
+        if (review.getRating() < 1 || review.getRating() > 10) {
+            throw new IllegalArgumentException("Rating must be between 1 and 10.");
+        }
+
+        // Create userReviews map if it doesn't exist
+        Map<String, Review> userReviews = tutorial.getUserReviews();
+        if (userReviews == null) {
+            userReviews = new HashMap<>();
+        }
+
+        // Add review to tutorial's userReviews map
+        userReviews.put(username, review);
+        tutorial.setUserReviews(userReviews);
+        tutorialRepository.save(tutorial);
+        Tutorial updatedTutorial = tutorialRepository.save(tutorial);
+        if (updatedTutorial == null) {
+            throw new RuntimeException("Failed to add review to tutorial.");
+        }
+        User updateUser = userRepository.findByUsername(username);
+
+
+        return updateUser;
+    }
+
+    @Override
     public User getCurrentUser(HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {

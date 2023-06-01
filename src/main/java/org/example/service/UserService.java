@@ -3,6 +3,7 @@ package org.example.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.dto.UserDTO;
+import org.example.entity.Review;
 import org.example.entity.Tutorial;
 import org.example.entity.User;
 import org.example.utils.BaseResponseDTO;
@@ -25,4 +26,5 @@ public interface UserService {
     public String uploadImage(@RequestParam("image") MultipartFile image);
     List<User> findUsersWithCommonTutorials(List<String> tutorialIds);
     public List<User> getFriendsForUser();
+    public User addReviewToTutorial(String tutorialId, Review review);
 }

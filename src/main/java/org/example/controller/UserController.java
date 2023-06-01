@@ -4,6 +4,7 @@ package org.example.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.dto.*;
 import org.example.entity.Friendship;
+import org.example.entity.Review;
 import org.example.entity.Tutorial;
 import org.example.entity.User;
 import org.example.exception.ResourceNotFoundException;
@@ -120,6 +121,24 @@ public class UserController {
             HttpServletRequest request){
        return userService.getUserTutorials(request);
 
+    }
+    @PatchMapping("/{tutorialId}/reviews")
+    public ResponseEntity<User> addReviewToTutorial(
+            @PathVariable String tutorialId,
+            @RequestBody Review review
+            ) {
+        try {
+            if (review.getRating() < 1 || review.getRating() > 10) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            User user = userService.addReviewToTutorial(tutorialId, review);
+            return ResponseEntity.ok(user);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/common-tutorials")
