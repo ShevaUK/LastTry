@@ -51,4 +51,5 @@ public class TutorialServiceImp implements TutorialService {
         }
         return friend.getTutorials();
     }
+
 }

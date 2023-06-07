@@ -9,4 +9,5 @@ import java.util.List;
 public interface TutorialService {
     public void createTutorial(Tutorial tutorial)throws ConstraintViolationException, TutorialCollectionException;
     public List<Tutorial> getFriendTutorials(String userId, String friendId);
+
 }

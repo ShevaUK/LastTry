@@ -1,16 +1,14 @@
 package org.example.entity;
 
-// без extends AuditMetadata
-
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.Map;
+
+import java.util.List;
 
 @Document(collection = "tutorials")
 public class Tutorial {
@@ -27,7 +25,8 @@ public class Tutorial {
     @DBRef
     private User user;
 
-    private Map<String, Review> userReviews;
+
+    private List<Review> userReviews;
 
 
     public Tutorial(String title, String author, boolean published) {
@@ -62,8 +61,12 @@ public class Tutorial {
     public void setPublished(boolean published) {
         this.published = published;
     }
-    public Map<String, Review> getUserReviews() {return userReviews;}
 
-    public void setUserReviews(Map<String, Review> userReviews) {this.userReviews = userReviews;}
+    public List<Review> getUserReviews() {
+        return userReviews;
+    }
 
+    public void setUserReviews(List<Review> userReviews) {
+        this.userReviews = userReviews;
+    }
 }

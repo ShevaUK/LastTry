@@ -4,6 +4,7 @@ package org.example.service.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.example.dto.Reviewer;
 import org.example.dto.UserDTO;
 import org.example.entity.*;
 import org.example.exception.BaseException;
@@ -136,13 +137,12 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
         Tutorial tutorial = tutorialRepository.findById(tutorialId)
                 .orElseThrow(() -> new ResourceNotFoundException("Tutorial", "id", tutorialId));
-        // create tutorials list if it doesn't exist
+
         List<Tutorial> tutorials = user.getTutorials();
         if (tutorials == null) {
             tutorials = new ArrayList<>();
         }
 
-        // add tutorial to user's tutorial list
         tutorials.add(tutorial);
         user.setTutorials(tutorials);
         userRepository.save(user);
@@ -157,21 +157,22 @@ public class UserServiceImpl implements UserService {
         }
         String username = authentication.getName();
         User currentUser = userRepository.findByUsername(username);
-//        String userId = currentUser.getId();
         Tutorial tutorial = tutorialRepository.findById(tutorialId)
                 .orElseThrow(() -> new ResourceNotFoundException("Tutorial", "id", tutorialId));
         if (review.getRating() < 1 || review.getRating() > 10) {
             throw new IllegalArgumentException("Rating must be between 1 and 10.");
         }
 
-        // Create userReviews map if it doesn't exist
-        Map<String, Review> userReviews = tutorial.getUserReviews();
-        if (userReviews == null) {
-            userReviews = new HashMap<>();
-        }
 
-        // Add review to tutorial's userReviews map
-        userReviews.put(username, review);
+        List<Review> userReviews = tutorial.getUserReviews();
+        if (userReviews == null) {
+            userReviews = new ArrayList<>();
+        }
+        Reviewer reviewer = new Reviewer(currentUser.getId(),currentUser.getUsername(),currentUser.getEmail(), currentUser.getFirstName(), currentUser.getLastName(), currentUser.getAvatarUrl());
+
+
+        Review reviewWithUser = new Review(review.getComment(), review.getRating(),reviewer);
+        userReviews.add(reviewWithUser);
         tutorial.setUserReviews(userReviews);
         tutorialRepository.save(tutorial);
         Tutorial updatedTutorial = tutorialRepository.save(tutorial);

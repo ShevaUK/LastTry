@@ -35,6 +35,7 @@ public class User {
 
     @DBRef
     private Set<Role> roles = new HashSet<>();
+
     @DBRef
     private List<Friendship> pendingFriendships;
 
