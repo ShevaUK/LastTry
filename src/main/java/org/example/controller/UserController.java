@@ -87,13 +87,13 @@ public class UserController {
         User currentUser = userService.getCurrentUser(request);
         return ResponseEntity.ok(currentUser);
     }
-    @GetMapping("/{userId}")
-    public ResponseEntity<User> getUser(@PathVariable("userId") String userId) {
-        User userById = userService.getUserById(userId);
-        if (userById == null) {
+    @GetMapping("/{username}")
+    public ResponseEntity<User> getUser(@PathVariable("username") String username) {
+        User userByUsername = userService.getUserByUsername(username);
+        if (userByUsername == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(userById);
+        return ResponseEntity.ok(userByUsername);
     }
     @PutMapping("/update")
     public ResponseEntity<User> updateUser(@RequestHeader("Authorization") String token, @RequestBody User userToUpdate) {

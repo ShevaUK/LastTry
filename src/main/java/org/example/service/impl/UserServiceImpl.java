@@ -112,8 +112,10 @@ public class UserServiceImpl implements UserService {
         return Sort.Direction.ASC;
     }
     @Override
-    public User getUserById(String userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+    public User getUserByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found");}
 
         User userWithoutPassword = new User();
         userWithoutPassword.setId(user.getId());

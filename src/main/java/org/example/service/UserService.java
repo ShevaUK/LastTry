@@ -16,7 +16,7 @@ import java.util.List;
 public interface UserService {
     public User getCurrentUser(HttpServletRequest request);
     BaseResponseDTO registerAccount(UserDTO userDTO);
-    User getUserById(String userId);
+    User getUserByUsername(String username);
 
     User addUser(User user);
     public User updateUser( User userToUpdate);
