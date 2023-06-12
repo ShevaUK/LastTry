@@ -7,8 +7,8 @@ import org.example.dto.Reviewer;
 
 
 public class Review {
-    @Size(min = 2,max = 100)
-    @NotNull(message="comment cannot be null")
+//    @Size(min = 2,max = 100)
+//    @NotNull(message="comment cannot be null")
     private String comment;
     private int rating;
     private Reviewer reviewer;
